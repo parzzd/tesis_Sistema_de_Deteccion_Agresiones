@@ -52,7 +52,7 @@ def stable_video_id(dataset: str, split: str, label: str, path: Path) -> str:
     return f"{safe_name(dataset)}_{safe_name(split)}_{safe_name(label)}_{digest}"
 
 
-def build_manifest(rwf_dir: Path, vioperu_dir: Path) -> pd.DataFrame:
+def build_manifest(rwf_dir: Path, vioperu_dir: Path, rlvs_dir: Path | None = None) -> pd.DataFrame:
     records: list[dict[str, Any]] = []
 
     def add_folder(dataset: str, source_subset: str, split: str, label: str, folder: Path) -> None:
@@ -81,6 +81,10 @@ def build_manifest(rwf_dir: Path, vioperu_dir: Path) -> pd.DataFrame:
         "NonFight",
         vioperu_dir / "false_positives_validation",
     )
+
+    if rlvs_dir is not None:
+        add_folder("RLVS", "train", "train", "Fight", rlvs_dir / "Violence")
+        add_folder("RLVS", "train", "train", "NonFight", rlvs_dir / "NonViolence")
 
     manifest = pd.DataFrame.from_records(records)
     if manifest.empty:
@@ -492,9 +496,6 @@ def train_lstm(
     device = resolve_torch_device(device_request)
     frame_feature_names = list(train_data.get("feature_names", FRAME_FEATURE_COLUMNS))
     if device.type == "cuda":
-        # On some Windows CUDA builds, cuDNN-backed LSTMs can finish training
-        # correctly but crash during interpreter shutdown. Keep CUDA enabled
-        # while using the non-cuDNN LSTM path for a cleaner pipeline exit.
         torch.backends.cudnn.enabled = False
     train_seq, val_seq, feature_mean, feature_std = normalize_sequences(train_data["X_seq"], val_data["X_seq"])
 
@@ -629,6 +630,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--rwf-dir", type=Path, default=Path("RWF-2000"), help="RWF-2000 dataset directory.")
     parser.add_argument("--vioperu-dir", type=Path, default=Path("VioPeru-main"), help="VioPeru-main dataset directory.")
+    parser.add_argument("--rlvs-dir", type=Path, default=None, help="RLVS dataset directory (Violence/NonViolence). Solo entrenamiento.")
     parser.add_argument("--model", type=Path, default=Path("yolo11s-pose.pt"), help="YOLO pose model path.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Pipeline output directory.")
     parser.add_argument("--target-fps", type=float, default=25.0, help="Effective FPS for feature extraction.")
@@ -679,7 +681,7 @@ def main() -> None:
             raise FileNotFoundError(f"--skip-extraction requires {feature_manifest_path}")
         feature_manifest = pd.read_csv(feature_manifest_path)
     else:
-        manifest = build_manifest(args.rwf_dir, args.vioperu_dir)
+        manifest = build_manifest(args.rwf_dir, args.vioperu_dir, args.rlvs_dir)
         manifest = sample_manifest(manifest, args.sample_per_group, args.seed)
         manifest.to_csv(args.output_dir / "manifest.csv", index=False, encoding="utf-8")
         print(f"[DATA] Videos en manifiesto: {len(manifest)}")
