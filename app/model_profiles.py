@@ -6,6 +6,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 HNM_MODEL_DIR = ROOT / "output" / "pipeline_25fps" / "hard_negative_mining" / "models"
+RLVS_MODEL_DIR = ROOT / "output" / "pipeline_25fps_rlvs" / "hard_negative_mining" / "models"
 
 
 MODEL_PROFILES: dict[str, dict[str, Any]] = {
@@ -29,7 +30,7 @@ MODEL_PROFILES: dict[str, dict[str, Any]] = {
     "high_accuracy": {
         "id": "high_accuracy",
         "name": "Alta precision",
-        "description": "Mayor resolucion para zonas criticas; consume mas GPU.",
+        "description": "Modelo entrenado con RLVS + mayor resolucion; consume mas GPU.",
         "recommended": False,
         "threshold": 0.49,
         "fps": 10.0,
@@ -39,9 +40,9 @@ MODEL_PROFILES: dict[str, dict[str, Any]] = {
         "smoothing_windows": 3,
         "alert_windows": 2,
         "cooldown_seconds": 30.0,
-        "stacker_model": str(HNM_MODEL_DIR / "stacker_hnm.joblib"),
-        "lgbm_model": str(HNM_MODEL_DIR / "lgbm_hnm.joblib"),
-        "lstm_model": str(HNM_MODEL_DIR / "lstm_hnm.pt"),
+        "stacker_model": str(RLVS_MODEL_DIR / "stacker_hnm.joblib"),
+        "lgbm_model": str(RLVS_MODEL_DIR / "lgbm_hnm.joblib"),
+        "lstm_model": str(RLVS_MODEL_DIR / "lstm_hnm.pt"),
     },
 }
 

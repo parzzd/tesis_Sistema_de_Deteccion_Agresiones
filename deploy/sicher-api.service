@@ -12,6 +12,7 @@ Environment=DATABASE_URL=sqlite:////opt/sicher/tesis_v22/users.db
 Environment=MPLCONFIGDIR=/opt/sicher/tesis_v22/.cache/matplotlib
 Environment=YOLO_CONFIG_DIR=/opt/sicher/tesis_v22/.cache/ultralytics
 Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/opt/sicher/tesis_v22/.env
 ExecStart=/opt/pytorch/bin/python -m uvicorn app.server:app --host 127.0.0.1 --port 8000
 Restart=always
 RestartSec=5

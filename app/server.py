@@ -522,6 +522,11 @@ def register_page() -> FileResponse:
     return FileResponse(STATIC_DIR / "register.html")
 
 
+@app.get("/forgot-password")
+def forgot_password_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "forgot_password.html")
+
+
 @app.get("/reset-password")
 def reset_password_page() -> FileResponse:
     return FileResponse(STATIC_DIR / "reset_password.html")
