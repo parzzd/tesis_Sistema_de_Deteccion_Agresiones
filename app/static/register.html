@@ -86,6 +86,19 @@ async function registerUser() {
   };
 
   err.style.display = 'none';
+
+  const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  if (!emailRegex.test(payload.email)) {
+    err.textContent = 'Ingrese un correo valido (ejemplo: correo@dominio.com).';
+    err.style.display = 'block';
+    return;
+  }
+  if (payload.password.length < 8) {
+    err.textContent = 'La contrasena debe tener al menos 8 caracteres.';
+    err.style.display = 'block';
+    return;
+  }
+
   btn.disabled = true;
   try {
     const res = await fetch(apiUrl('/register'), {

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 import secrets
 import time
 from pathlib import Path
@@ -38,6 +39,9 @@ from app.utils import hash_password, make_salt, verify_password
 ROOT = Path(__file__).resolve().parents[1]
 STATIC_DIR = ROOT / "app" / "static"
 GLOBAL_STATE = {"overlay": False, "threshold": 0.49}
+
+EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+MIN_PASSWORD_LENGTH = 8
 
 app = FastAPI(title="Sicher Aggression Detection API", version="0.1.0")
 app.add_middleware(
@@ -541,6 +545,10 @@ def config_js() -> FileResponse:
 def register(payload: RegisterRequest, db: Session = Depends(get_db)) -> dict[str, Any]:
     ensure_roles(db)
     email = payload.email.strip().lower()
+    if not EMAIL_REGEX.match(email):
+        raise HTTPException(status_code=400, detail={"error": "Formato de correo invalido"})
+    if len(payload.password) < MIN_PASSWORD_LENGTH:
+        raise HTTPException(status_code=400, detail={"error": f"La contrasena debe tener al menos {MIN_PASSWORD_LENGTH} caracteres"})
     if db.query(User).filter(User.username == email).first():
         raise HTTPException(status_code=400, detail={"error": "El email ya existe"})
 
