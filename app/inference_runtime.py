@@ -253,10 +253,19 @@ async def stream_camera(websocket: Any, serial_number: str, src: str, config_loa
     last_processed_at = 0.0
     last_frame_id = -1
     reader = LatestFrameReader(cap)
+    # La config se relee desde la BD como mucho cada CONFIG_REFRESH_INTERVAL s
+    # (no en cada iteracion del loop): antes esto abria ~30 sesiones de BD por
+    # segundo y camara durante los ciclos de throttle / espera de frame.
+    config: dict[str, Any] = {}
+    config_loaded_at = 0.0
+    CONFIG_REFRESH_INTERVAL = 1.0
 
     try:
         while True:
-            config = config_loader()
+            now_loop = time.time()
+            if not config or now_loop - config_loaded_at >= CONFIG_REFRESH_INTERVAL:
+                config = config_loader()
+                config_loaded_at = now_loop
             fps = max(float(config.get("fps", 10.0)), 1.0)
             interval = 1.0 / fps
             elapsed = time.time() - last_processed_at

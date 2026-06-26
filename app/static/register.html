@@ -86,7 +86,6 @@ async function registerUser() {
   };
 
   err.style.display = 'none';
-
   const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   if (!emailRegex.test(payload.email)) {
     err.textContent = 'Ingrese un correo valido (ejemplo: correo@dominio.com).';

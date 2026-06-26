@@ -354,7 +354,37 @@ button.sec { background: #334155; border-color: #475569 }
 }
 .alert-info {
   flex: 1;
-  min-width: 220px;
+  min-width: 0;
+}
+.alert-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+.alert-actions .action-btn {
+  width: 42px;
+  min-width: 42px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 8px;
+}
+.alert-actions .btnOk {
+  color: #052e16;
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.alert-actions .btnNo {
+  color: #fff;
+  background: var(--alert);
+  border-color: var(--alert);
 }
 
 .statusdot {
@@ -652,8 +682,7 @@ footer {
     grid-column: 1 / -1;
     width: 100%;
   }
-  .alertrow { flex-wrap: wrap; align-items: flex-start }
-  .action-btn { flex: 1 1 120px }
+  .alertrow { align-items: center }
 }
 
 @media (max-width: 380px) {

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sicher - Monitoreo AI</title>
-  <link rel="stylesheet" href="/static/index.css?v=camera-layout-20260517" />
+  <link rel="stylesheet" href="/static/index.css?v=alert-icons-20260623" />
   <script src="/config.js"></script>
 </head>
 <body>
@@ -1265,8 +1265,10 @@ function addAlert(msg) {
       <b>${escapeHtml(serial_number)}</b>
       <div class="muted">prob=${prob.toFixed(3)} · thr=${Number(msg.threshold ?? 0).toFixed(2)} · ${escapeHtml(msg.model_profile || 'modelo')} · ${tsText}</div>
     </div>
-    <button class="sec action-btn btnOk" data-serial="${serial_number}" data-prob="${prob}" data-ts="${ts}">Aceptar</button>
-    <button class="sec action-btn btnNo" data-serial="${serial_number}" data-prob="${prob}" data-ts="${ts}">Rechazar</button>
+    <div class="alert-actions">
+      <button class="action-btn btnOk" data-serial="${serial_number}" data-prob="${prob}" data-ts="${ts}" title="Aceptar" aria-label="Aceptar">&#10003;</button>
+      <button class="action-btn btnNo" data-serial="${serial_number}" data-prob="${prob}" data-ts="${ts}" title="Rechazar" aria-label="Rechazar">&#10007;</button>
+    </div>
   `;
 
   $('#alerts').prepend(row);
