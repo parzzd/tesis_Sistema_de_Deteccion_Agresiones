@@ -15,10 +15,10 @@ def _generate_company_code(db: Session) -> str:
             return code
 
 
-def create_company(db: Session, name: str, rut: str | None = None, codigo: str | None = None) -> Company:
+def create_company(db: Session, name: str, codigo: str | None = None) -> Company:
     if not codigo:
         codigo = _generate_company_code(db)
-    company = Company(name=name, rut=rut or None, codigo=codigo, is_active=True)
+    company = Company(name=name, codigo=codigo, is_active=True)
     db.add(company)
     db.commit()
     db.refresh(company)

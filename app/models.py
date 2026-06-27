@@ -24,7 +24,6 @@ class Company(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(160), nullable=False)
-    rut = Column(String(64), nullable=True)
     codigo = Column(String(16), unique=True, nullable=False, index=True)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(Float, default=now_ts, nullable=False)

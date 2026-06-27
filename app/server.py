@@ -101,7 +101,6 @@ class AlertRequest(BaseModel):
 
 class CompanyRequest(BaseModel):
     name: str
-    rut: str | None = None
 
 
 class UserActivePatch(BaseModel):
@@ -989,7 +988,6 @@ def list_companies(db: Session = Depends(get_db), user: User = Depends(current_u
             {
                 "id": company.id,
                 "name": company.name,
-                "rut": company.rut,
                 "codigo": company.codigo,
                 "is_active": company.is_active,
                 "user_count": len(company.users),
@@ -1010,11 +1008,11 @@ def create_company(payload: CompanyRequest, db: Session = Depends(get_db), user:
         code = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
         if not db.query(Company).filter(Company.codigo == code).first():
             break
-    company = Company(name=payload.name.strip(), rut=payload.rut, codigo=code, is_active=True)
+    company = Company(name=payload.name.strip(), codigo=code, is_active=True)
     db.add(company)
     db.commit()
     db.refresh(company)
-    return {"id": company.id, "name": company.name, "rut": company.rut, "codigo": company.codigo, "is_active": company.is_active}
+    return {"id": company.id, "name": company.name, "codigo": company.codigo, "is_active": company.is_active}
 
 
 @app.get("/admin/users")
