@@ -30,6 +30,12 @@ uvicorn_local*.log
 # Salida del script de prueba de RTSP
 frame_test*.jpg
 
+# Archivos de uso local, fuera del repo publico (ver revert de "act in")
+config/model.yaml
+mediamtx.yml
+pyproject.toml
+test_rtsp_read.py
+
 data/raw/
 data/processed/
 data/features/
